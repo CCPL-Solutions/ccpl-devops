@@ -51,7 +51,7 @@ pipeline {
 
             git branch: "main", credentialsId: 'local-jenkins', url: "https://github.com/pedro-chavezcastro/ccpl-devops.git"
 
-            def app = docker.build("plchavez98/${params.REPO_NAME}", "./ccpl-devops/projects/tdsmicroservices/Dockerfile")
+            def app = docker.build("plchavez98/${params.REPO_NAME}", "./projects/tdsmicroservices/Dockerfile")
 
             docker.withRegistry("https://registry.hub.docker.com", "DockerHubCredentials") {
               app.push("${gitcommit}")
