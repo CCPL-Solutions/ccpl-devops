@@ -11,7 +11,7 @@ pipeline {
         script {
           repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
           dir(repoWorkspace) {
-            git branch: "${params.REPO_BRANCH}", credentialsId: 'local-jenkins', url: "https://github.com/pedro-chavezcastro/${params.REPO_NAME}.git"
+            git branch: "${params.REPO_BRANCH}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${params.REPO_NAME}.git"
           }
         }
       }
@@ -49,9 +49,9 @@ pipeline {
             sh "git rev-parse --short HEAD > .git/commit-id"
             gitcommit = readFile(".git/commit-id").trim()
 
-            git branch: "main", credentialsId: 'local-jenkins', url: "https://github.com/pedro-chavezcastro/ccpl-devops.git"
+            git branch: "main", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/ccpl-devops.git"
 
-            def app = docker.build("plchavez98/${params.REPO_NAME}", "./projects/tdsmicroservices/Dockerfile")
+            def app = docker.build("${DOCKER_HUB_USERNAME}/${params.REPO_NAME}", "./projects/tdsmicroservices")
 
             docker.withRegistry("https://registry.hub.docker.com", "DockerHubCredentials") {
               app.push("${gitcommit}")
