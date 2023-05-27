@@ -57,8 +57,8 @@ pipeline {
               app.push("latest")
             }
 
-            sh "docker rmi ${DOCKER_HUB_USERNAME}/${params.REPO_NAME}:${gitcommit}"
-            sh "docker rmi ${DOCKER_HUB_USERNAME}/${params.REPO_NAME}:latest"
+            sh "docker rmi registry.hub.docker.com/${DOCKER_HUB_USERNAME}/${params.REPO_NAME}:${gitcommit}"
+            sh "docker rmi registry.hub.docker.com/${DOCKER_HUB_USERNAME}/${params.REPO_NAME}:latest"
 
           }
         }
