@@ -1,0 +1,73 @@
+def repoWorkspace
+
+pipeline {
+  agent any
+  tools {
+    maven "maven-jenkins"
+  }
+  stages {
+    stage('Checkout') {
+      steps {
+        script {
+          repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
+          dir(repoWorkspace) {
+            git branch: "${params.REPO_BRANCH}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${params.REPO_NAME}.git"
+          }
+        }
+      }
+    }
+    stage('Build') {
+      steps {
+        dir("${repoWorkspace}") {
+          sh 'mvn clean package'
+        }
+      }
+    }
+    stage('Test') {
+      steps {
+        dir("${repoWorkspace}") {
+          sh 'mvn test'
+        }
+      }
+    }
+    stage("Scan & Quality Gate") {
+      steps {
+        dir("${repoWorkspace}") {
+          withSonarQubeEnv(installationName: "SonarQubeServer") {
+            sh "mvn sonar:sonar"
+          }
+          timeout(time: 2, unit: "MINUTES") {
+            waitForQualityGate abortPipeline: true
+          }
+        }
+      }
+    }
+    stage('Publish to Artifactory') {
+      steps {
+        dir("${repoWorkspace}") {
+          script {
+            def server = Artifactory.server 'ccplsolutions.loca.jfrog'
+            def rtMaven = Artifactory.newMavenBuild()
+
+            rtMaven.tool = 'maven-jenkins'
+            rtMaven.deployer releaseRepo: 'ccpl-libs-release-local', snapshotRepo: 'ccpl-libs-snapshot-local', server: server
+            rtMaven.resolver releaseRepo: 'ccpl-libs-release', snapshotRepo: 'ccpl-libs-snapshot', server: server
+
+            def buildInfo = rtMaven.run pom: 'pom.xml', goals: 'clean install'
+
+            server.publishBuildInfo buildInfo
+          }
+        }
+      }
+    }
+
+  }
+  post {
+    success {
+      slackSend message: "Build successfully - ${env.REPO_NAME} # ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+    failure {
+      slackSend message: "Build failed - ${env.REPO_NAME} # ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+    }
+  }
+}
