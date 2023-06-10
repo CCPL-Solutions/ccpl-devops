@@ -7,6 +7,9 @@ pipeline {
   }
   stages {
     stage('Checkout') {
+      when{
+        expression {params.PAYLOAD == ''}
+      }
       steps {
         script {
           repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
