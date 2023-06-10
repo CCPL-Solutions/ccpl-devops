@@ -18,9 +18,9 @@ pipeline {
             branch = payload.ref
           }
 
-          repoWorkspace = "${WORKSPACE}/${prepository}"
+          repoWorkspace = "${WORKSPACE}/${repository}"
           dir(repoWorkspace) {
-            git branch: "${branch}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${prepository}.git"
+            git branch: "${branch}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${repository}.git"
           }
         }
       }
