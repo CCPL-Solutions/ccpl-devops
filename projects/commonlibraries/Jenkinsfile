@@ -9,30 +9,9 @@ pipeline {
     stage('Checkout') {
       steps {
         script {
-          def payloadJson = readJSON text: "${env.payload}"
-
-
-          echo "params.REPO_NAME: ${params.REPO_NAME}"
-          echo "params.REPO_BRANCH: ${params.REPO_BRANCH}"
-          echo "params.PAYLOAD: ${params.PAYLOAD}"
-          echo "payloadJson Webhook: ${payloadJson}"
-
-          def repository = params.REPO_NAME
-          def branch = params.REPO_BRANCH
-
-          if (!params.PAYLOAD.isEmpty()) {
-          echo "El job fue ejecutado por medio de un evento de GitHub... Se procede a mapear los datos del payload"
-          echo "Payload: ${env.payload}"
-
-          def payload = readJSON text: env.payload
-
-            repository = payload.repository
-            branch = payload.ref
-          }
-
-          repoWorkspace = "${WORKSPACE}/${repository}"
+          repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
           dir(repoWorkspace) {
-            git branch: "${branch}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${repository}.git"
+            git branch: "${params.REPO_BRANCH}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${params.REPO_NAME}.git"
           }
         }
       }
