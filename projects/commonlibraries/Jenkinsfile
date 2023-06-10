@@ -18,7 +18,7 @@ pipeline {
           def repository = params.REPO_NAME
           def branch = params.REPO_BRANCH
 
-          if (params.PAYLOAD != '') {
+          if (!params.PAYLOAD.isEmpty()) {
           echo "El job fue ejecutado por medio de un evento de GitHub... Se procede a mapear los datos del payload"
           echo "Payload: ${env.payload}"
 
