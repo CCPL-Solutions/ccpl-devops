@@ -13,6 +13,7 @@ pipeline {
           def branch = params.REPO_BRANCH
 
           if (params.PAYLOAD != '') {
+            echo "PAYLOAD: ${params.PAYLOAD}"
             def payload = readJSON text: params.PAYLOAD
 
             echo "Webhook Payload: ${payload}"
