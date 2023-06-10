@@ -11,14 +11,17 @@ pipeline {
         script {
 
           echo "params.REPO_NAME: ${params.REPO_NAME}"
-          echo "params.REPO_BRANCH: ${params.REPO_NAME}"
+          echo "params.REPO_BRANCH: ${params.REPO_BRANCH}"
           echo "params.PAYLOAD: ${params.PAYLOAD}"
 
           def repository = params.REPO_NAME
           def branch = params.REPO_BRANCH
 
           if (params.PAYLOAD != '') {
-            def payload = readJSON text: env.payload
+          echo "El job fue ejecutado por medio de un evento de GitHub... Se procede a mapear los datos del payload"
+          echo "Payload: ${env.payload}"
+
+          def payload = readJSON text: env.payload
 
             repository = payload.repository
             branch = payload.ref
