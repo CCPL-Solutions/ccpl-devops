@@ -18,6 +18,18 @@ pipeline {
           }
         }
       }
+      when{
+        expression {params.PAYLOAD != ''}
+      }
+      steps {
+        script {
+          def payload = readJSON text: params.PAYLOAD
+          repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
+          dir(repoWorkspace) {
+            git branch: "${payload.ref}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${payload.repository}.git"
+          }
+        }
+      }
     }
     stage('Build') {
       steps {
