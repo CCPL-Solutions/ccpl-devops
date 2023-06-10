@@ -9,11 +9,13 @@ pipeline {
     stage('Checkout') {
       steps {
         script {
+          def payloadJson = readJSON text: "${env.payload}"
+
 
           echo "params.REPO_NAME: ${params.REPO_NAME}"
           echo "params.REPO_BRANCH: ${params.REPO_BRANCH}"
           echo "params.PAYLOAD: ${params.PAYLOAD}"
-          echo "Payload Webhook: ${env.payload}"
+          echo "payloadJson Webhook: ${payloadJson}"
 
           def repository = params.REPO_NAME
           def branch = params.REPO_BRANCH
