@@ -19,7 +19,9 @@ pipeline {
     stage('Build') {
       steps {
         dir("${repoWorkspace}") {
-          sh 'mvn clean package'
+          configFileProvider([configFile(fileId: 'mvn-settings-artifactory', variable: 'MAVEN_SETTINGS_XML')]) {
+            sh 'mvn clean package'
+          }
         }
       }
     }
