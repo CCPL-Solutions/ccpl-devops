@@ -45,6 +45,11 @@ pipeline {
       }
     }
     stage('Docker Build & Push') {
+      when {
+        expression {
+          params.REPO_BRANCH == 'develop'
+        }
+      }
       steps {
         dir("${repoWorkspace}") {
           script {
