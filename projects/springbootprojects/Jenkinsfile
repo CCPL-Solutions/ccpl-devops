@@ -56,9 +56,7 @@ pipeline {
             sh "git rev-parse --short HEAD > .git/commit-id"
             gitcommit = readFile(".git/commit-id").trim()
 
-            git branch: "main", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/ccpl-devops.git"
-
-            def app = docker.build("${DOCKER_HUB_USERNAME}/${params.REPO_NAME}", "./projects/springbootprojects")
+            def app = docker.build("${DOCKER_HUB_USERNAME}/${params.REPO_NAME}")
             docker.withRegistry("https://registry.hub.docker.com", "DockerHubCredentials") {
               app.push("${gitcommit}")
               app.push("latest")
