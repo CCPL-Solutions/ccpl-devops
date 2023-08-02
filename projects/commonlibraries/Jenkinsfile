@@ -11,7 +11,7 @@ pipeline {
         script {
           repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
           dir(repoWorkspace) {
-            git branch: "${params.REPO_BRANCH}", credentialsId: 'local-jenkins', url: "https://github.com/${REPO_USERNAME}/${params.REPO_NAME}.git"
+            checkout scmGit(branches: [[name: "${params.REPO_BRANCH}"]], extensions: [], userRemoteConfigs: [[credentialsId: '5a737657-1516-4d9b-808a-8e3efdfb0ccc', url: "git@github.com:CCPL-Solutions/${params.REPO_NAME}.git"]])
           }
         }
       }
