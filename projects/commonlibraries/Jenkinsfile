@@ -1,4 +1,5 @@
 def repoWorkspace
+def branchName
 
 pipeline {
   agent any
@@ -10,8 +11,11 @@ pipeline {
       steps {
         script {
           repoWorkspace = "${WORKSPACE}/${params.REPO_NAME}"
+          def fullBranchName = params.REPO_BRANCH
+          branchName = fullBranchName.replace('refs/heads/', '')
+
           dir(repoWorkspace) {
-            checkout scmGit(branches: [[name: "${params.REPO_BRANCH}"]], extensions: [], userRemoteConfigs: [[credentialsId: 'ccpl-solutions-app', url: "https://github.com/CCPL-Solutions/${params.REPO_NAME}.git"]])
+            checkout scmGit(branches: [[name: "${branchName}"]], extensions: [], userRemoteConfigs: [[credentialsId: 'ccpl-solutions-app', url: "https://github.com/CCPL-Solutions/${params.REPO_NAME}.git"]])
           }
         }
       }
