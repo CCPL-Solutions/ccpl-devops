@@ -1,0 +1,73 @@
+@Library('ccpl-pipelinesjenkins-library') _
+
+import com.solutions.ccpl.utils.Git
+import com.solutions.ccpl.utils.Util
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject
+
+def git  = new Git()
+def util = new Util()
+
+def branchName
+def projectName
+def channelSlackNotification
+def multiBranchJobName
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    branchName = util.getBrachName(params.REPO_BRANCH)
+                    releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
+                    projectName = releaseConfigurationContent.projectName
+                    channelSlackNotification = releaseConfigurationContent.channelSlackNotification
+                }
+            }
+        }
+        stage('Configure Workspace') {
+            steps {
+                script {
+
+                    git.cloneRepository('ccpl-devops', 'main')
+                    sh 'cp projects/dsl/my_job.dsl .'
+
+                    multiBranchJobName = "/CCPLSolutions/${projectName}/${params.REPO_NAME}"
+                    def multiBranchJob = Jenkins.instance.getItemByFullName(multiBranchJobName)
+
+                    if (multiBranchJob != null && multiBranchJob instanceof WorkflowMultiBranchProject) {
+
+                        println 'El Multibranch Pipeline ya existe. Iniciando escaneo de ramas...'
+                        multiBranchJob.scheduleBuild()
+
+                    } else {
+
+                        println "Creando Multibranch Pipeline... ${multiBranchJobName}"
+                        jobDsl targets: 'my_job.dsl',
+                                additionalParameters: [PROJECT_NAME: "${projectName}", REPO_NAME: "${params.REPO_NAME}"]
+                    }
+
+                }
+            }
+        }
+        stage('Execute MultiBranch Pipeline') {
+            steps {
+                script {
+                    sleep(time: 10, unit: 'SECONDS')
+
+                    build job: "${multiBranchJobName}/${branchName}",
+                                wait: false, 
+                                parameters:[
+                                    string(name: 'repositoryName', value: "${params.REPO_NAME}"),
+                                    string(name: 'type',           value: "PushEvent"),
+                                    string(name: 'projectName',    value: "${projectName}"),
+                                    string(name: 'pusherName',     value: "${params.PUSHER_NAME}"),
+                                    string(name: 'channelSlack',   value: "${channelSlackNotification}"),
+                                    string(name: 'stages',         value: "Build;UnitTest;CoverageTest;ScanAndQualityGate")
+                                ]
+                }
+            }
+        }
+    }
+}

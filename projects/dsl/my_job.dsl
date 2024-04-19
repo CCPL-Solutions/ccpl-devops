@@ -1,6 +1,6 @@
 folder('CCPLSolutions') {
   displayName('CCPLSolutions')
-  description('Folder for CCPLSolutions')
+  description('CCPLSolutions')
 }
 
 folder("CCPLSolutions/${PROJECT_NAME}") {
@@ -9,7 +9,7 @@ folder("CCPLSolutions/${PROJECT_NAME}") {
       branchSource {
         source {
           git {
-            id('sample-app')
+            id("${REPO_NAME}")
             remote("https://github.com/CCPL-Solutions/${REPO_NAME}.git")
             credentialsId('local-jenkins-private')
           }

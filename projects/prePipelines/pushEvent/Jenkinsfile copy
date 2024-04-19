@@ -1,0 +1,69 @@
+def branchName
+def projectName
+pipeline {
+    agent any
+
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    buildName "${params.REPO_NAME}"
+
+                    def fullBranchName = params.REPO_BRANCH
+                    branchName = fullBranchName.replace('refs/heads/', '')
+
+                    checkout scmGit(
+                        branches: [
+                            [name: "${branchName}"]
+                        ],
+                        extensions: [],
+                        userRemoteConfigs: [
+                            [
+                                credentialsId: 'local-jenkins-private',
+                                url: "https://github.com/CCPL-Solutions/${params.REPO_NAME}.git"
+                            ]
+                        ])
+
+                    def jsonContent = readJSON file: 'release-configuration.json'
+                    projectName = jsonContent.projectName
+                }
+            }
+        }
+        stage('Configure Workspace') {
+            steps {
+                script {
+                    checkout scmGit(branches: [
+                        [name: 'main']
+                    ], extensions: [], userRemoteConfigs: [
+                        [url: 'https://github.com/pedro-chavezcastro/ccpl-devops.git']
+                    ])
+                    sh "cp projects/dsl/my_job.dsl ."
+
+                    def multiBranchJobName = "/CCPLSolutions/SistemaGestionDocumentalMT/${params.REPO_NAME}"
+                    def multiBranchJob = Jenkins.instance.getItemByFullName(multiBranchJobName)
+                    if (multiBranchJob != null && multiBranchJob instanceof org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject) {
+                        println "El Multibranch Pipeline ya existe. Iniciando escaneo de ramas..."
+                        multiBranchJob.scheduleBuild()
+                    } else {
+                        println "Creando Multibranch Pipeline... ${multiBranchJobName}"
+                        jobDsl targets: 'my_job.dsl',
+                                additionalParameters: [PROJECT_NAME: "${projectName}", REPO_NAME: "${params.REPO_NAME}"]
+                    }
+                }
+            }
+        }
+        stage('Execute MultiBranch Pipeline') {
+            steps {
+                script {
+                    sleep(time: 10, unit: 'SECONDS')
+
+                    build job: "/CCPLSolutions/SistemaGestionDocumentalMT/${params.REPO_NAME}/${branchName}", 
+                                wait: false, 
+                                parameters:[
+                                    string(name: 'REPO_NAME', value: "${params.REPO_NAME}")
+                                ]
+                }
+            }
+        }
+    }
+}
