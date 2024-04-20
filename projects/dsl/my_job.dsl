@@ -3,7 +3,7 @@ folder('CCPLSolutions') {
   description('CCPLSolutions')
 }
 
-folder('CCPLSolutions/${PROJECT_NAME}') {
+folder("CCPLSolutions/${PROJECT_NAME}") {
   displayName("${PROJECT_NAME}")
   description("Carpeta base para componentes asociados al proyecto ${PROJECT_NAME}")
 }
