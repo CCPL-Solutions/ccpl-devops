@@ -9,7 +9,6 @@ def util = new Util()
 
 def branchName
 def projectName
-def channelSlackNotification
 def msVersion
 def multiBranchJobName
 
@@ -24,7 +23,6 @@ pipeline {
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
-                    channelSlackNotification = releaseConfigurationContent.channelSlackNotification
                     msVersion = releaseConfigurationContent.version
                 }
             }
@@ -36,7 +34,7 @@ pipeline {
                     git.cloneRepository('ccpl-devops', 'main')
                     sh 'cp projects/dsl/my_job.dsl .'
 
-                    multiBranchJobName = "/CCPLSolutions/${projectName}/microservices/${params.REPO_NAME}"
+                    multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${params.REPO_NAME}"
                     def multiBranchJob = Jenkins.instance.getItemByFullName(multiBranchJobName)
 
                     if (multiBranchJob != null && multiBranchJob instanceof WorkflowMultiBranchProject) {
@@ -51,7 +49,7 @@ pipeline {
                                 additionalParameters: [
                                     PROJECT_NAME: "${projectName}", 
                                     REPO_NAME: "${params.REPO_NAME}",
-                                    CATEGORY: "microservices"]
+                                    CATEGORY: "${params.CATEGORY}"]
                     }
 
                 }
@@ -65,12 +63,8 @@ pipeline {
                     build job: "${multiBranchJobName}/${branchName}",
                                 wait: false, 
                                 parameters:[
-                                    string(name: 'msVersion',      value: "${msVersion}"),
-                                    string(name: 'type',           value: "PushEvent"),
-                                    string(name: 'projectName',    value: "${projectName}"),
-                                    string(name: 'pusherName',     value: "${params.PUSHER_NAME}"),
-                                    string(name: 'channelSlack',   value: "${channelSlackNotification}"),
-                                    string(name: 'stages',         value: "build;unitTest;coverageTest;scanAndQualityGate")
+                                    string(name: 'type',      value: "Micropipeline"),
+                                    string(name: 'msVersion', value: "${msVersion}")
                                 ]
                 }
             }
