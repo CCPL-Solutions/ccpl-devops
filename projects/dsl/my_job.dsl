@@ -3,8 +3,8 @@ folder('CCPLSolutions') {
   description('CCPLSolutions')
 }
 
-folder("CCPLSolutions/${PROJECT_NAME}") {
-  multibranchPipelineJob("CCPLSolutions/${PROJECT_NAME}/${REPO_NAME}") {
+folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
+  multibranchPipelineJob("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}/${REPO_NAME}") {
     branchSources {
       branchSource {
         source {
