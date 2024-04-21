@@ -64,7 +64,8 @@ pipeline {
                     build job: "${multiBranchJobName}/${branchName}",
                                 wait: false, 
                                 parameters:[
-                                    string(name: 'variables', value: "type:Micropipeline;msVersion:${msVersion}")
+                                    string(name: 'variables', value: "type:Release;msVersion:${msVersion}"),
+                                    string(name: 'stages', value: "build;dockerBuildAndPush")
                                 ]
                 }
             }
