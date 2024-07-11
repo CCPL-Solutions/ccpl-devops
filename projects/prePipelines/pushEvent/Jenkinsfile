@@ -19,7 +19,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    buildName "#${BUILD_NUMBER}-${params.REPO_NAME}"
+                    buildName "${params.REPO_NAME}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
