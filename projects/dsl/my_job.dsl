@@ -28,9 +28,13 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
         }
       }
     }
-    configure {
-      def traits = it / sources / data / 'jenkins.branch.BranchSource' / source / traits
+    configure { node ->
+      def traits = node / sources / data / 'jenkins.branch.BranchSource' / source / traits
       traits << 'jenkins.plugins.git.traits.BranchDiscoveryTrait' {}
+      traits << 'jenkins.plugins.git.traits.WildcardSCMSourceFilterTrait' {
+        includes('develop dev-* feat-*')
+        excludes('')
+      }
     }
     factory {
       workflowBranchProjectFactory {
