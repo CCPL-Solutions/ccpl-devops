@@ -17,6 +17,13 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
             id("${REPO_NAME}")
             remote("https://github.com/CCPL-Solutions/${REPO_NAME}.git")
             credentialsId('local-jenkins-private')
+            traits {
+              // Add branch filter trait
+              'jenkins.plugins.git.traits.WildcardSCMSourceFilterTrait' {
+                includes('develop dev-* feat-*')
+                excludes('')
+              }
+            }
           }
         }
         strategy {
@@ -26,14 +33,6 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
             }
           }
         }
-      }
-    }
-    configure { node ->
-      def traits = node / sources / data / 'jenkins.branch.BranchSource' / source / traits
-      traits << 'jenkins.plugins.git.traits.BranchDiscoveryTrait' {}
-      traits << 'jenkins.plugins.git.traits.WildcardSCMSourceFilterTrait' {
-        includes('develop dev-* feat-*')
-        excludes('')
       }
     }
     factory {
