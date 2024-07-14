@@ -1,5 +1,21 @@
 version: "3.8"
 services:
+
+  ms-identitymanagement-neg-dev-xappinc-1:
+    image: plchavez98/ms-identitymanagement-neg:dev-xappinc-1
+    container_name: ms-identitymanagement-neg-dev-xappinc-1
+    environment:
+      CONTEXT_PATH: /api/dev-xappinc-1
+      MS_VERSION: dev-xappinc-1
+      PROFILE_ACTIVE: dev
+      CONFIG_SERVER_URI: http://gdmt-config-server:8888
+      VAULT_SCHEME: http
+      VAULT_HOST: devtools-vault-filesystem-1
+      VAULT_PORT: 8200
+      VAULT_AUTHENTICATION: TOKEN
+      VAULT_TOKEN: s.lni0j0MHeyGsyZu1mQCS6NNG
+    networks:
+      - gdmt-microservices-network
 networks:
   gdmt-microservices-network:
     external: true

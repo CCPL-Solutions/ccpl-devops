@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ms-identitymanagement-neg
+  profiles:
+    active: test
+  cloud:
+    config:
+      uri: http://localhost:8888
+    vault:
+      enabled: false
+      scheme: http
+      host: localhost
+      port: 8200
+      authentication: TOKEN
+      token: hvs9yVzJDLxBFxyzXVZRblrDsLH
+      fail-fast: false
+      application-name: gdmt-storage-credentials
+  config:
+    import: optional:vault://
