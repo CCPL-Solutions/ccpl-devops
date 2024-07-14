@@ -1,6 +1,22 @@
 version: "3.8"
 services:
 
+  ms-identitymanagement-neg-dev-bdp-dc-23:
+    image: plchavez98/ms-identitymanagement-neg:dev-bdp-dc-23
+    container_name: ms-identitymanagement-neg-dev-bdp-dc-23
+    environment:
+      CONTEXT_PATH: /api/dev-bdp-dc-23
+      MS_VERSION: dev-bdp-dc-23
+      PROFILE_ACTIVE: dev
+      CONFIG_SERVER_URI: http://gdmt-config-server:8888
+      VAULT_SCHEME: http
+      VAULT_HOST: devtools-vault-filesystem-1
+      VAULT_PORT: 8200
+      VAULT_AUTHENTICATION: TOKEN
+      VAULT_TOKEN: s.lni0j0MHeyGsyZu1mQCS6NNG
+    networks:
+      - gdmt-microservices-network
+        
   ms-identitymanagement-neg-develop:
     image: plchavez98/ms-identitymanagement-neg:develop
     container_name: ms-identitymanagement-neg-develop
