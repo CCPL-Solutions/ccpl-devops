@@ -28,6 +28,10 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
         }
       }
     }
+    configure {
+      def traits = it / sources / data / 'jenkins.branch.BranchSource' / source / traits
+      traits << 'jenkins.plugins.git.traits.BranchDiscoveryTrait' {}
+    }
     factory {
       workflowBranchProjectFactory {
         scriptPath('Jenkinsfile')
@@ -37,14 +41,6 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
       discardOldItems {
         numToKeep(5)
       }
-    }
-    configure { node ->
-      def traitsNode = node / sources / data / 'jenkins.branch.BranchSource' / source / traits
-      traitsNode << 'jenkins.plugins.git.traits.WildcardSCMSourceFilterTrait' {
-        includes('develop dev-* feat-*')
-        excludes('')
-      }
-      traitsNode << 'jenkins.plugins.git.traits.BranchDiscoveryTrait' {}
     }
   }
 }

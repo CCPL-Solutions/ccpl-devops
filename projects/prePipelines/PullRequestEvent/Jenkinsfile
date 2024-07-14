@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
 
-                    git.cloneRepository('ccpl-devops', 'main')
+                    git.cloneRepository('ccpl-devops', 'master')
                     sh 'cp projects/dsl/my_job.dsl .'
 
                     multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${params.REPO_NAME}"
@@ -64,8 +64,8 @@ pipeline {
                     build job: "${multiBranchJobName}/${branchName}",
                                 wait: false, 
                                 parameters:[
-                                    string(name: 'variables', value: "type:Release;msVersion:${msVersion}"),
-                                    string(name: 'stages', value: "build;dockerBuildAndPush")
+                                    string(name: 'variables', value: "type:DeployDev;msVersion:${msVersion}"),
+                                    string(name: 'stages', value: "build;validateConfigFile;dockerBuildAndPush;updateDockerCompose;deployDockerCompose")
                                 ]
                 }
             }
