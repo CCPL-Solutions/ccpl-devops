@@ -1,5 +1,22 @@
 version: "3.8"
 services:
+
+  ms-identitymanagement-neg-develop:
+    image: plchavez98/ms-identitymanagement-neg:develop
+    container_name: ms-identitymanagement-neg-develop
+    environment:
+      CONTEXT_PATH: /api/develop
+      MS_VERSION: develop
+      PROFILE_ACTIVE: dev
+      CONFIG_SERVER_URI: http://gdmt-config-server:8888
+      VAULT_SCHEME: http
+      VAULT_HOST: devtools-vault-filesystem-1
+      VAULT_PORT: 8200
+      VAULT_AUTHENTICATION: TOKEN
+      VAULT_TOKEN: s.Y25mZMjphX3Ob8lsw5D3RNPH
+    restart: always
+    networks:
+      - gdmt-microservices-network
 networks:
   gdmt-microservices-network:
     external: true
