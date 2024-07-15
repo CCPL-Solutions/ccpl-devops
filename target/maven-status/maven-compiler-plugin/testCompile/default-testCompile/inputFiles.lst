@@ -1,0 +1,3 @@
+/var/jenkins_home/workspace/s-identitymanagement-neg_develop/src/test/java/co/edu/colegiominayticha/msidentitymanagementneg/controller/UserControllerTest.java
+/var/jenkins_home/workspace/s-identitymanagement-neg_develop/src/test/java/co/edu/colegiominayticha/msidentitymanagementneg/service/impl/UserServiceImplTest.java
+/var/jenkins_home/workspace/s-identitymanagement-neg_develop/src/test/java/co/edu/colegiominayticha/msidentitymanagementneg/DummyMock.java

@@ -1,0 +1,23 @@
+server:
+  servlet:
+    context-path: ${CONTEXT_PATH:/api/local}
+
+spring:
+  application:
+    name: ms-identitymanagement-neg-${MS_VERSION:local}
+  profiles:
+    active: ${PROFILE_ACTIVE:local}
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+    vault:
+      enabled: true
+      scheme: ${VAULT_SCHEME:http}
+      host: ${VAULT_HOST:localhost}
+      port: ${VAULT_PORT:8200}
+      authentication: ${VAULT_AUTHENTICATION:TOKEN}
+      token: ${VAULT_TOKEN}
+      fail-fast: true
+      application-name: gdmt-storage-credentials
+  config:
+    import: optional:vault://
