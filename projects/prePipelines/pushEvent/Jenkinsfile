@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
 
-                    git.cloneRepository('ccpl-devops', 'main')
+                    git.cloneRepository('ccpl-devops', 'master')
                     sh 'cp projects/dsl/my_job.dsl .'
 
                     multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${params.REPO_NAME}"
