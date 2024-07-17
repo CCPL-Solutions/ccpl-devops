@@ -33,7 +33,7 @@ pipeline {
                 script {
 
                     git.cloneRepository('ccpl-devops', 'master')
-                    sh 'cp projects/dsl/my_job.dsl .'
+                    sh 'cp projects/dsl/multibranchPipelineSeedJob.dsl .'
 
                     multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${params.REPO_NAME}"
                     def multiBranchJob = Jenkins.instance.getItemByFullName(multiBranchJobName)
@@ -46,7 +46,7 @@ pipeline {
                     } else {
 
                         println "Creando Multibranch Pipeline... ${multiBranchJobName}"
-                        jobDsl targets: 'my_job.dsl',
+                        jobDsl targets: 'multibranchPipelineSeedJob.dsl',
                                 additionalParameters: [
                                     PROJECT_NAME: "${projectName}", 
                                     REPO_NAME: "${params.REPO_NAME}",
