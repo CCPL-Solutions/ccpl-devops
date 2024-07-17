@@ -18,13 +18,6 @@ folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
         includes("feat-* dev-* develop")
         excludes("master re-v*")
       }
-      strategy {
-        defaultBranchPropertyStrategy {
-          props {
-            noTriggerBranchProperty()
-          }
-        }
-      }
     }
     configure {
       def traits = it / sources / data / 'jenkins.branch.BranchSource' / source / traits
