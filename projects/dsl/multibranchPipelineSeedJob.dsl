@@ -11,12 +11,22 @@ folder("CCPLSolutions/${PROJECT_NAME}") {
 folder("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}") {
   multibranchPipelineJob("CCPLSolutions/${PROJECT_NAME}/${CATEGORY}/${REPO_NAME}") {
     branchSources {
-      git {
-        id("${REPO_NAME}")
-        remote("https://github.com/CCPL-Solutions/${REPO_NAME}.git")
-        credentialsId('local-jenkins-private')
-        includes("feat-* dev-* develop")
-        excludes("master re-v*")
+      branchSource {
+        source {
+          git {
+            id("${REPO_NAME}")
+            remote("https://github.com/CCPL-Solutions/${REPO_NAME}.git")
+            credentialsId('local-jenkins-private')
+            includes('feat-* dev-* develop')
+          }
+        }
+        strategy {
+          defaultBranchPropertyStrategy {
+            props {
+              noTriggerBranchProperty()
+            }
+          }
+        }
       }
     }
     configure {
