@@ -35,7 +35,7 @@ pipeline {
 
                     slackSend (channel: "${channelSlackNotification}",
                                color: '#36a64f',
-                               message: "The pre-pipeline DevMergeEvent has been started for the component *${params.REPO_NAME}*. Author: ${git.getAuthorLastCommit()}.")
+                               message: "Pre-pipeline DevMergeEvent has been started for the component *${params.REPO_NAME}*. Author: ${git.getAuthorLastCommit()}.")
                 }
             }
         }
