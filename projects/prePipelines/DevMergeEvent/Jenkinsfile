@@ -21,6 +21,7 @@ pipeline {
                 script {
                     buildName "#${BUILD_NUMBER}-${params.REPO_NAME}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
+                    branchName = branchName.replace("dev", "feat")
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
