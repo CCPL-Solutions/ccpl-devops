@@ -12,6 +12,7 @@ def channelSlackNotification
 def msVersion
 def multiBranchJobName
 def projectName
+def repoName
 
 pipeline {
     agent any
@@ -20,17 +21,19 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    buildName "${params.REPO_NAME}"
+                    repoName = "${params.REPO_NAME}"
+
+                    buildName "#${BUILD_NUMBER} - ${repoName}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
 
-                    releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
+                    releaseConfigurationContent = util.getReleaseConfigurationContent(repoName, branchName)
                     projectName = releaseConfigurationContent.projectName
                     msVersion = releaseConfigurationContent.version
                     channelSlackNotification = releaseConfigurationContent.channelSlackNotification
 
                     slackSend (channel: "${channelSlackNotification}",
                                color: '#36a64f',
-                               message: "The pre-pipeline PushEvent has been started for the component ${projectName} in the branch ${branchName}. Author: ${env.GIT_AUTHOR_NAME}.")
+                               message: "The pre-pipeline PushEvent has been started for the component ${repoName} in the branch ${branchName}. Author: ${git.getAuthorLastCommit()}.")
                 }
             }
         }
@@ -41,7 +44,7 @@ pipeline {
                     git.cloneRepository('ccpl-devops', 'master')
                     sh 'cp projects/dsl/multibranchPipelineSeedJob.dsl .'
 
-                    multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${params.REPO_NAME}"
+                    multiBranchJobName = "/CCPLSolutions/${projectName}/${params.CATEGORY}/${repoName}"
                     def multiBranchJob = Jenkins.instance.getItemByFullName(multiBranchJobName)
 
                     if (multiBranchJob != null && multiBranchJob instanceof WorkflowMultiBranchProject) {
@@ -55,7 +58,7 @@ pipeline {
                         jobDsl targets: 'multibranchPipelineSeedJob.dsl',
                                 additionalParameters: [
                                     PROJECT_NAME: "${projectName}", 
-                                    REPO_NAME: "${params.REPO_NAME}",
+                                    REPO_NAME: "${repoName}",
                                     CATEGORY: "${params.CATEGORY}"]
                     }
 
