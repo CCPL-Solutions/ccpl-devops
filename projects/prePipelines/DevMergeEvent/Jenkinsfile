@@ -19,18 +19,23 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    buildName "#${BUILD_NUMBER}-${params.REPO_NAME}"
+                    buildName "#${BUILD_NUMBER} - ${params.REPO_NAME}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
                     def auxBranchName = branchName.replace("dev", "feat")
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
                     msVersion = releaseConfigurationContent.version
+                    channelSlackNotification = releaseConfigurationContent.channelSlackNotification
 
                     def status = readFile("/var/jenkins_home/jenkins_pipeline_status/CCPLSolutions/${projectName}/${params.REPO_NAME}/${auxBranchName}/status.txt").trim()
                     if (status != 'SUCCESS') {
                         error "The last execution of the feature pipeline was not successful. Aborting."
                     }
+
+                    slackSend (channel: "${channelSlackNotification}",
+                               color: '#36a64f',
+                               message: "The pre-pipeline DevMergeEvent has been started for the component *${params.REPO_NAME}*. Author: ${git.getAuthorLastCommit()}.")
                 }
             }
         }
