@@ -8,9 +8,10 @@ def git  = new Git()
 def util = new Util()
 
 def branchName
-def projectName
+def channelSlackNotification
 def msVersion
 def multiBranchJobName
+def projectName
 
 pipeline {
     agent any
@@ -25,6 +26,11 @@ pipeline {
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
                     msVersion = releaseConfigurationContent.version
+                    channelSlackNotification = releaseConfigurationContent.channelSlackNotification
+
+                    slackSend (channel: "${channelSlackNotification}",
+                               color: '#36a64f',
+                               message: "The pre-pipeline PushEvent has been started for the component ${projectName} in the branch ${branchName}. Author: ${env.GIT_AUTHOR_NAME}.")
                 }
             }
         }
