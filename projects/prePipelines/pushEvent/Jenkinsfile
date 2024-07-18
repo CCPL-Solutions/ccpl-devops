@@ -33,7 +33,7 @@ pipeline {
 
                     slackSend (channel: "${channelSlackNotification}",
                                color: '#36a64f',
-                               message: "The pre-pipeline PushEvent has been started for the component ${repoName} in the branch ${branchName}. Author: ${git.getAuthorLastCommit()}.")
+                               message: ":info: The pre-pipeline PushEvent has been started for the component ${repoName}. Author: ${git.getAuthorLastCommit()}.")
                 }
             }
         }
