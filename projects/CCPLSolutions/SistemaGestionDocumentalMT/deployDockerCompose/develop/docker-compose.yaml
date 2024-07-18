@@ -1,6 +1,27 @@
 version: "3.8"
 services:
 
+  ms-identitymanagement-neg-dev-ccpl-2:
+    image: plchavez98/ms-identitymanagement-neg:dev-ccpl-2
+    container_name: ms-identitymanagement-neg-dev-ccpl-2
+    environment:
+      CONTEXT_PATH: /api/dev-ccpl-2
+      MS_VERSION: dev-ccpl-2
+      PROFILE_ACTIVE: develop
+      CONFIG_SERVER_URI: http://ms-config-server:8888
+      VAULT_SCHEME: http
+      VAULT_HOST: devtools-vault-filesystem-1
+      VAULT_PORT: 8200
+      VAULT_AUTHENTICATION: TOKEN
+      VAULT_TOKEN: s.Y25mZMjphX3Ob8lsw5D3RNPH
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/dev-ccpl-2/actuator/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - gdmt-microservices-network
+        
   ms-retentionschedules-neg-dev-dc-23:
     image: plchavez98/ms-retentionschedules-neg:dev-dc-23
     container_name: ms-retentionschedules-neg-dev-dc-23
