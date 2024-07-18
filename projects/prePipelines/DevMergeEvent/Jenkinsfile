@@ -21,13 +21,13 @@ pipeline {
                 script {
                     buildName "#${BUILD_NUMBER}-${params.REPO_NAME}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
-                    branchName = branchName.replace("dev", "feat")
+                    def auxBranchName = branchName.replace("dev", "feat")
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
                     msVersion = releaseConfigurationContent.version
 
-                    def status = readFile("/var/jenkins_home/jenkins_pipeline_status/CCPLSolutions/${projectName}/${params.REPO_NAME}/${branchName}/status.txt").trim()
+                    def status = readFile("/var/jenkins_home/jenkins_pipeline_status/CCPLSolutions/${projectName}/${params.REPO_NAME}/${auxBranchName}/status.txt").trim()
                     if (status != 'SUCCESS') {
                         error "The last execution of the feature pipeline was not successful. Aborting."
                     }
