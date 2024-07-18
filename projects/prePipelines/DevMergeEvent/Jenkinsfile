@@ -25,6 +25,11 @@ pipeline {
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
                     projectName = releaseConfigurationContent.projectName
                     msVersion = releaseConfigurationContent.version
+
+                    def status = readFile("/var/jenkins_home/jenkins_pipeline_status/CCPLSolutions/${projectName}/${params.REPO_NAME}/${branchName}/status.txt").trim()
+                    if (status != 'SUCCESS') {
+                        error "The last execution of the feature pipeline was not successful. Aborting."
+                    }
                 }
             }
         }
@@ -64,7 +69,7 @@ pipeline {
                     build job: "${multiBranchJobName}/${branchName}",
                                 wait: false, 
                                 parameters:[
-                                    string(name: 'variables', value: "type:DeployDev;msVersion:${msVersion};environment:develop"),
+                                    string(name: 'variables', value: "type:DeployDev;projectName:${projectName};msVersion:${msVersion};environment:develop"),
                                     string(name: 'stages', value: "build;validateConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy")
                                 ]
                 }
