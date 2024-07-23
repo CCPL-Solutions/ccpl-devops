@@ -80,7 +80,7 @@ pipeline {
                                 wait: false, 
                                 parameters:[
                                     string(name: 'variables', value: "type:DeployDev;projectName:${projectName};msVersion:${msVersion};environment:develop"),
-                                    string(name: 'stages', value: "build;validateConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy;createReleaseBranch")
+                                    string(name: 'stages', value: "build;validateConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy")
                                 ]
                 }
             }
