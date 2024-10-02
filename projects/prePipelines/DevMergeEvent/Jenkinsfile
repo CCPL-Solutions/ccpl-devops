@@ -76,7 +76,7 @@ pipeline {
                 script {
                     sleep(time: 10, unit: 'SECONDS')
 
-                    def stagesPipe = "build;validateConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy"
+                    def stagesPipe = "build;validateConfigFile;dockerBuildAndPush;deployDocker;verifyDockerDeploy"
                     if (branchName != 'develop') {
                         stagesPipe = stagesPipe + ";createReleaseBranch"
                     }
