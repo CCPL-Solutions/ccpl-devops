@@ -32,7 +32,7 @@ pipeline {
                     channelSlackNotification = releaseConfigurationContent.channelSlackNotification
 
                     slackSend (channel: "${channelSlackNotification}",
-                               color: '#36a64f',
+                               color: 'warning',
                                message: "Pre-pipeline PushEvent has been started for the component *${repoName}*. Author: ${git.getAuthorLastCommit()}.")
                 }
             }
