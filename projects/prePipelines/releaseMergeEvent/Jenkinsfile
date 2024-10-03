@@ -69,7 +69,7 @@ pipeline {
                                 wait: false, 
                                 parameters:[
                                     string(name: 'variables', value: "type:Release;projectName:${projectName};msVersion:${msVersion};environment:qa"),
-                                    string(name: 'stages', value: "build;validateConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy")
+                                    string(name: 'stages', value: "build;mergeConfigFile;dockerBuildAndPush;updateDockerComposeFile;deployDocker;verifyDockerDeploy;aprobarCertificacion;mergeConfigFile(PROD);updateDockerComposeFile(PROD);deployDocker(PROD);verifyDockerDeploy(PROD)")
                                 ]
                 }
             }
