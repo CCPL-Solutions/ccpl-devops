@@ -11,6 +11,7 @@ def branchName
 def projectName
 def msVersion
 def multiBranchJobName
+def repoName
 
 pipeline {
     agent any
@@ -20,6 +21,8 @@ pipeline {
             steps {
                 script {
                     buildName "#${BUILD_NUMBER} - ${params.REPO_NAME}"
+                    
+                    repoName = "${params.REPO_NAME}"
                     branchName = util.getBrachName(params.REPO_BRANCH)
 
                     releaseConfigurationContent = util.getReleaseConfigurationContent(params.REPO_NAME, branchName)
