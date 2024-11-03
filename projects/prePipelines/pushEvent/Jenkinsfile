@@ -72,9 +72,9 @@ pipeline {
 
                     def stagesPipe = null
 
-                    if (projectName.contains("zuul-server")   || 
-                        projectName.contains("config-server") ||
-                        projectName.contains("eureka-server")) {
+                    if (repoName.contains("zuul-server")   || 
+                        repoName.contains("config-server") ||
+                        repoName.contains("eureka-server")) {
                             stagesPipe = "build"
                     }
 

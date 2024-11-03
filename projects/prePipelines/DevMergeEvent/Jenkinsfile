@@ -81,9 +81,9 @@ pipeline {
                         stagesPipe = stagesPipe + ";createReleaseBranch"
                     }
 
-                    if (projectName.contains("zuul-server")   || 
-                        projectName.contains("config-server") ||
-                        projectName.contains("eureka-server")) {
+                    if (repoName.contains("zuul-server")   || 
+                        repoName.contains("config-server") ||
+                        repoName.contains("eureka-server")) {
                             stagesPipe = "build;validateConfigFile;dockerBuildAndPush;deployDocker;createReleaseBranch"
                     }
 
