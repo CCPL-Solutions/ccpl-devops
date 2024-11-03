@@ -81,6 +81,12 @@ pipeline {
                         stagesPipe = stagesPipe + ";createReleaseBranch"
                     }
 
+                    if (projectName.contains("zuul-server" || 
+                        projectName.contains("config-server")) ||
+                        projectName.contains("eureka-server"))) {
+                            stagesPipe = "build"
+                    }
+
                     build job: "${multiBranchJobName}/${branchName}",
                                 wait: false, 
                                 parameters:[
