@@ -78,9 +78,12 @@ jobs:
 
       - name: Print settings.xml
         run: cat ~/.m2/settings.xml
+      
+      - name: Borrar cache local de Maven (opcional)
+        run: rm -rf ~/.m2/repository/com/edu/colegiominayticha/gdmt-lib-commons
 
       - name: Build With Maven
-        run: mvn clean package -DskipTests
+        run: mvn -X clean install -s ~/.m2/settings.xml -DskipTests=false
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
