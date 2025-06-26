@@ -6,13 +6,14 @@ on:
       SLACK_WEBHOOK_URL:
         required: false
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build:
     name: Buid
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
