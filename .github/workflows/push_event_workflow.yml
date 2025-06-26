@@ -42,17 +42,12 @@ jobs:
 
       - name: Set up Maven settings for GitHub Packages
         run: |
-          mkdir -p $HOME/.m2
-          cat > $HOME/.m2/settings.xml <<EOF
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                http://maven.apache.org/xsd/settings-1.0.0.xsd">
-
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings>
             <activeProfiles>
               <activeProfile>github</activeProfile>
             </activeProfiles>
-
             <profiles>
               <profile>
                 <id>github</id>
@@ -71,7 +66,6 @@ jobs:
                 </repositories>
               </profile>
             </profiles>
-
             <servers>
               <server>
                 <id>github</id>
@@ -86,7 +80,7 @@ jobs:
         run: cat ~/.m2/settings.xml
 
       - name: Build With Maven
-        run: mvn clean install -DskipTests=false
+        run: mvn -X clean install -DskipTests=false
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
