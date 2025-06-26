@@ -40,17 +40,17 @@ jobs:
           distribution: "temurin"
 
       - name: Configure Maven for GitHub Packages
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |
             [{
-              "id": "github",
+              "id": "myGithub",
               "username": "${{ github.actor }}",
               "password": "${{ secrets.GITHUB_TOKEN }}"
             }]
           repositories: |
             [{
-              "id": "github",
+              "id": "myGithub",
               "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons"
             }]
 
