@@ -19,3 +19,5 @@ jobs:
             {
               "text": "A push event has been triggered for the component `${{ github.event.repository.name }}`."
             }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
