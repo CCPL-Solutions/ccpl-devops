@@ -10,14 +10,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Export SLACK_WEBHOOK_URL env
+        if: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}" >> $GITHUB_ENV
+
       - name: Notify Slack
-        if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
+        if: env.SLACK_WEBHOOK_URL != ''
         uses: 8398a7/action-slack@v3
         with:
           status: custom
           custom_payload: |
             {
-              "text": "A push event has been triggered for the component `${{ github.event.repository.name }}`."
+              "text": "🚀 A push event has been triggered for the component `${{ github.event.repository.name }}`."
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
