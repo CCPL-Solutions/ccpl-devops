@@ -39,23 +39,13 @@ jobs:
           java-version: "11"
           distribution: "temurin"
 
-      - name: Configure Maven for GitHub Packages
-        uses: s4u/maven-settings-action@v3.1.0
-        with:
-          servers: |
-            [{
-              "id": "myGithub",
-              "username": "${{ github.actor }}",
-              "password": "${{ secrets.GITHUB_TOKEN }}"
-            }]
-          repositories: |
-            [{
-              "id": "myGithub",
-              "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons",
-              "snapshots":{
-                "enabled": true
-              }
-            }]
+      - name: Copy custom settings.xml
+        run: |
+          mkdir -p ~/.m2
+          cp .github/maven-settings/settings.xml ~/.m2/settings.xml
+        env:
+          GITHUB_ACTOR_SETTINGS: ${{ github.actor }}
+          GITHUB_TOKEN_SETTINGS: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build With Maven
         run: mvn clean install -DskipTests=false
