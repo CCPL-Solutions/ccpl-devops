@@ -40,6 +40,11 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+      
+      - name: Set up Maven settings for GitHub Packages
+        uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: '[{"id": "github", "username": "${{ github.actor }}", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
 
       - name: Build With Maven
         run: mvn clean install -DskipTests=false
@@ -47,15 +52,8 @@ jobs:
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
-          status: custom
-          fields: workflow,job,commit,repo,ref,author,took
-          custom_payload: |
-            {
-              attachments: [{
-                color: '${{ job.status }}' === 'success' ? 'good' : '${{ job.status }}' === 'failure' ? 'danger' : 'warning',
-                text: "Build completed for the component *${{ github.event.repository.name }}*. Status: *${{ job.status }}*"
-              }]
-            }
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
