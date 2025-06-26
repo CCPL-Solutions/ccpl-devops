@@ -82,6 +82,9 @@ jobs:
           </settings>
           EOF
 
+      - name: Print settings.xml
+        run: cat ~/.m2/settings.xml
+
       - name: Build With Maven
         run: mvn clean install -DskipTests=false
 
