@@ -24,9 +24,9 @@ jobs:
           fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
-              "text": "Push event has been triggered for the component `${{ github.event.repository.name }}`. Author: `${{ github.actor }}`",
-              "attachments": [{
-                "color": "warning"
+              attachments: [{
+                color: "warning",
+                text: "Push event has been triggered for the component `${{ github.event.repository.name }}`. Author: `${{ github.actor }}`"
               }]
             }
         env:
