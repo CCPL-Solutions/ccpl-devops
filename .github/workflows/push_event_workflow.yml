@@ -75,8 +75,8 @@ jobs:
             <servers>
               <server>
                 <id>github</id>
-                <username>${env.GITHUB_ACTOR_SETTINGS}</username>
-                <password>${env.GITHUB_TOKEN_SETTINGS}</password>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
               </server>
             </servers>
           </settings>
