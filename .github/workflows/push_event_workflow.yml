@@ -52,7 +52,9 @@ jobs:
             [{
               "id": "myGithub",
               "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons",
-              "snapshots":{"enabled":true}
+              "snapshots":{
+                "enabled": true
+              }
             }]
 
       - name: Build With Maven
