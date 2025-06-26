@@ -14,8 +14,6 @@ jobs:
   build:
     name: Buid
     runs-on: ubuntu-latest
-    env:
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
