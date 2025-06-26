@@ -24,7 +24,10 @@ jobs:
           fields: workflow,job,commit,repo,ref,author,took
           custom_payload: |
             {
-              "text": "Push event has been triggered for the component `${{ github.event.repository.name }}`. Author: `${{ github.actor }}`"
+              "text": "Push event has been triggered for the component `${{ github.event.repository.name }}`. Author: `${{ github.actor }}`",
+              "attachments": [{
+                "color": "warning"
+              }]
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
