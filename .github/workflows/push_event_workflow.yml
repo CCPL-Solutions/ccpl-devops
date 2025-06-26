@@ -53,6 +53,9 @@ jobs:
 
       - name: Build With Maven
         run: mvn -X clean install -s ~/.m2/settings.xml -DskipTests=false
+        env:
+          GITHUB_ACTOR_SETTINGS: ${{ github.actor }}
+          GITHUB_TOKEN_SETTINGS: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
