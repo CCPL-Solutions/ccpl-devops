@@ -80,7 +80,7 @@ jobs:
         run: cat ~/.m2/settings.xml
 
       - name: Build With Maven
-        run: mvn -X clean install -DskipTests=false
+        run: .\mvnw clean package -DskipTests
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
