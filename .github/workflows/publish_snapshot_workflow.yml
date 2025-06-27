@@ -13,12 +13,15 @@ on:
 permissions:
   contents: read
   actions: read
-  packages: write
 
 jobs:
   build:
     name: Publish Snapshot
     runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
+
     steps:
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
