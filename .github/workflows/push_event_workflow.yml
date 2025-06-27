@@ -3,9 +3,11 @@ name: Push Event Workflow
 on:
   workflow_call:
     secrets:
-      SLACK_WEBHOOK_URL:
+      USERNAME:
         required: true
-      TOKEN_EXAMPLE:
+      USERNAME_ACCESS_TOKEN:
+        required: true
+      SLACK_WEBHOOK_URL:
         required: true
 
 permissions:
@@ -49,8 +51,8 @@ jobs:
             [
               {
                 "id": "github",
-                "username": "${{ github.actor }}",
-                "password": "${{ secrets.TOKEN_EXAMPLE }}"
+                "username": "${{ secrets.USERNAME }}",
+                "password": "${{ secrets.USERNAME_ACCESS_TOKEN }}"
               }
             ]
           repositories: |
