@@ -54,6 +54,17 @@ jobs:
                 "password": "${{ secrets.USERNAME_ACCESS_TOKEN }}"
               }
             ]
+          repositories: |
+            [
+              {
+                "id": "central",
+                "url": "https://repo1.maven.org/maven2"
+              },
+              {
+                "id": "github",
+                "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons"
+              }
+            ]
 
       - name: Build
         run: mvn clean install -DskipTests=true
