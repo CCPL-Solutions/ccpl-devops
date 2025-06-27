@@ -10,13 +10,9 @@ on:
       SLACK_WEBHOOK_URL:
         required: true
 
-permissions:
-  contents: read
-  actions: read
-
 jobs:
   build:
-    name: Buid and Test
+    name: Publish Snapshot
     runs-on: ubuntu-latest
     steps:
       - name: Slack Notification
@@ -28,7 +24,7 @@ jobs:
             {
               attachments: [{
                 color: "warning",
-                text: "Push event has been triggered for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
+                text: "Publis Snapshot event has been triggered for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
               }]
             }
         env:
@@ -68,12 +64,9 @@ jobs:
 
       - name: Build
         run: mvn clean install -DskipTests=false
-      
-      - name: UnitTests
-        run: mvn test
 
-      - name: ConverageTests
-        run: mvn verify -Dmaven.test.skip=true
+      - name: Publish to GitHub Packages
+        run: mvn deploy -DskipTests=true
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
