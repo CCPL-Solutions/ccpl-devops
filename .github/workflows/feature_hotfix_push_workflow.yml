@@ -1,4 +1,4 @@
-name: Push Event Workflow
+name: Feature/Hotfix CI
 
 on:
   workflow_call:
@@ -9,11 +9,6 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: true
-
-permissions:
-  contents: read
-  actions: read
-  packages: read
 
 jobs:
   build:
