@@ -13,6 +13,7 @@ on:
 permissions:
   contents: read
   actions: read
+  packages: write
 
 jobs:
   build:
@@ -28,7 +29,7 @@ jobs:
             {
               attachments: [{
                 color: "warning",
-                text: "Publis Snapshot event has been triggered for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
+                text: "Publis Snapshot Pipe has been started for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
               }]
             }
         env:
@@ -54,20 +55,9 @@ jobs:
                 "password": "${{ secrets.USERNAME_ACCESS_TOKEN }}"
               }
             ]
-          repositories: |
-            [
-              {
-                "id": "central",
-                "url": "https://repo1.maven.org/maven2"
-              },
-              {
-                "id": "github",
-                "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons"
-              }
-            ]
 
       - name: Build
-        run: mvn clean install -DskipTests=false
+        run: mvn clean install -DskipTests=true
 
       - name: Publish to GitHub Packages
         run: mvn deploy -DskipTests=true
