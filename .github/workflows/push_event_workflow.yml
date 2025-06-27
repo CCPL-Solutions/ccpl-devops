@@ -40,8 +40,16 @@ jobs:
           java-version: "11"
           distribution: "temurin"
 
-      - name: Build with Maven
-        run: mvn -s $GITHUB_WORKSPACE/.github/workflows/maven-settings.xml -B package --file pom.xml 
+      - name: Copy custom settings.xml
+        run: |
+          mkdir -p ~/.m2
+          cp .github/maven-settings/settings.xml ~/.m2/settings.xml
+
+      - name: Print settings.xml
+        run: cat ~/.m2/settings.xml
+
+      - name: Build With Maven
+        run: mvn clean install -s .github/maven-settings/settings.xml -DskipTests=false
         env:
           GITHUB_ACTOR_SETTINGS: ${{ secrets.USUARIO_EXAMPLE }}
           GITHUB_TOKEN_SETTINGS: ${{ secrets.TOKEN_EXAMPLE }}
