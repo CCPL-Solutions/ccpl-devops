@@ -47,14 +47,11 @@ jobs:
 
       - name: Print settings.xml
         run: cat ~/.m2/settings.xml
-      
-      - name: Borrar cache local de Maven (opcional)
-        run: rm -rf ~/.m2/repository/com/edu/colegiominayticha/gdmt-lib-commons
 
       - name: Build With Maven
-        run: mvn -X clean install -s ~/.m2/settings.xml -DskipTests=false
+        run: mvn clean install -s ~/.m2/settings.xml -DskipTests=false
         env:
-          GITHUB_ACTOR_SETTINGS: ${{ github.actor }}
+          GITHUB_ACTOR_SETTINGS: ${{ secrets.USUARIO_EXAMPLE }}
           GITHUB_TOKEN_SETTINGS: ${{ secrets.TOKEN_EXAMPLE }}
 
       - name: Slack Notification
