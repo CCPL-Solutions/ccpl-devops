@@ -69,12 +69,15 @@ jobs:
             <servers>
               <server>
                 <id>github</id>
-                <username>${{ secrets.USUARIO_EXAMPLE }}</username>
-                <password>${{ secrets.TOKEN_EXAMPLE }}</password>
+                <username>${env.GITHUB_ACTOR_SETTINGS}</username>
+                <password>${env.GITHUB_TOKEN_SETTINGS}</password>
               </server>
             </servers>
           </settings>
           EOF
+        env:
+          GITHUB_ACTOR_SETTINGS: ${{ secrets.USUARIO_EXAMPLE }}
+          GITHUB_TOKEN_SETTINGS: ${{ secrets.TOKEN_EXAMPLE }}
 
       - name: Build With Maven
         run: mvn clean install -s .github/maven-settings/settings.xml -DskipTests=false
