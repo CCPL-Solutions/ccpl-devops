@@ -10,6 +10,10 @@ on:
       SLACK_WEBHOOK_URL:
         required: true
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   build:
     name: Buid and Test
