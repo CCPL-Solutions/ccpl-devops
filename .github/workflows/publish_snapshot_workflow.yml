@@ -13,7 +13,6 @@ on:
 permissions:
   contents: read
   actions: read
-  packages: write
 
 jobs:
   build:
