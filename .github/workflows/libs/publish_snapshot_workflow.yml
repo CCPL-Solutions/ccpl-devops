@@ -1,0 +1,85 @@
+name: Feature/Hotfix CI
+
+on:
+  workflow_call:
+    secrets:
+      USERNAME:
+        required: true
+      USERNAME_ACCESS_TOKEN:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    name: Buid and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: workflow,job,commit,repo,ref,author,took
+          custom_payload: |
+            {
+              attachments: [{
+                color: "warning",
+                text: "Push event has been triggered for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+
+      - name: Set up Maven settings for GitHub Packages
+        uses: s4u/maven-settings-action@v3.1.0
+        with:
+          servers: |
+            [
+              {
+                "id": "github",
+                "username": "${{ secrets.USERNAME }}",
+                "password": "${{ secrets.USERNAME_ACCESS_TOKEN }}"
+              }
+            ]
+          repositories: |
+            [
+              {
+                "id": "central",
+                "url": "https://repo1.maven.org/maven2"
+              },
+              {
+                "id": "github",
+                "url": "https://maven.pkg.github.com/CCPL-Solutions/gdmt-lib-commons"
+              }
+            ]
+
+      - name: Build
+        run: mvn clean install -DskipTests=false
+      
+      - name: UnitTests
+        run: mvn test
+
+      - name: ConverageTests
+        run: mvn verify -Dmaven.test.skip=true
+
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: workflow,repo,message,author
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
