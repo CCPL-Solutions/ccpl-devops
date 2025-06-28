@@ -9,6 +9,10 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: true
+    inputs:
+      IS_SNAPSHOT:
+        required: true
+        type: boolean
 
 permissions:
   contents: read
@@ -29,7 +33,7 @@ jobs:
             {
               attachments: [{
                 color: "warning",
-                text: "Publis Snapshot Pipe has been started for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
+                text: "Publish Artifact Pipeline has been started for the component ${{ github.event.repository.name }}. Author: ${{ github.actor }}."
               }]
             }
         env:
@@ -67,11 +71,18 @@ jobs:
               }
             ]
 
-      - name: Build
-        run: mvn clean install -DskipTests=true
-
-      - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests=true
+      - name: Validate version matches snapshot flag
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Project version: $version"
+          if [[ "${{ inputs.IS_SNAPSHOT }}" == "true" && "$version" != *-SNAPSHOT ]]; then
+            echo "Expected a SNAPSHOT version but found: $version"
+            exit 1
+          fi
+          if [[ "${{ inputs.IS_SNAPSHOT }}" == "false" && "$version" == *-SNAPSHOT ]]; then
+            echo "Expected a RELEASE version but found SNAPSHOT: $version"
+            exit 1
+          fi
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
