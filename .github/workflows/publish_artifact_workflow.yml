@@ -94,6 +94,22 @@ jobs:
             mvn clean deploy -DskipTests=true
           fi
 
+      - name: Create Release Branch
+        if: ${{ inputs.IS_SNAPSHOT == false }}
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          branch=release/$version
+          echo "Creating branch $branch ..."
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch origin
+          if git ls-remote --exit-code --heads origin "$branch"; then
+            echo "Branch $branch already exists. Deleting it..."
+            git push origin --delete "$branch"
+          fi
+          git checkout -b "$branch"
+          git push origin "$branch"
+
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
