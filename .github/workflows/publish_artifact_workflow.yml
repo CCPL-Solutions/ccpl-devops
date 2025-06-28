@@ -48,7 +48,7 @@ jobs:
           java-version: "11"
           distribution: "temurin"
 
-      - name: Set up Maven settings for GitHub Packages
+      - name: Set Up Maven Settings
         uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: |
@@ -71,7 +71,7 @@ jobs:
               }
             ]
 
-      - name: Validate version
+      - name: Validate Version
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Project version: $version"
@@ -84,11 +84,15 @@ jobs:
             exit 1
           fi
 
-      - name: Build
-        run: mvn clean install -DskipTests=true
-
-      - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests=true
+      - name: Build and Publish
+        run: |
+          if [ "${{ inputs.IS_SNAPSHOT }}" = "true" ]; then
+            echo "Publishing SNAPSHOT version..."
+            mvn clean deploy -DskipTests=true
+          else
+            echo "Publishing RELEASE version..."
+            mvn clean deploy -DskipTests=true
+          fi
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
