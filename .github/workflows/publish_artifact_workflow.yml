@@ -1,4 +1,4 @@
-name: Feature/Hotfix CI
+name: Publish Artifact
 
 on:
   workflow_call:
