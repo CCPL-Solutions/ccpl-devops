@@ -71,7 +71,7 @@ jobs:
               }
             ]
 
-      - name: Validate version matches snapshot flag
+      - name: Validate version
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Project version: $version"
@@ -83,6 +83,12 @@ jobs:
             echo "Expected a RELEASE version but found SNAPSHOT: $version"
             exit 1
           fi
+
+      - name: Build
+        run: mvn clean install -DskipTests=true
+
+      - name: Publish to GitHub Packages
+        run: mvn deploy -DskipTests=true
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
