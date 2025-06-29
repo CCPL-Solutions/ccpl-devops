@@ -169,19 +169,29 @@ jobs:
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           release_branch=release/$version
 
-          echo "Current branch3"
-          git branch --show-current
-
           echo "Merging $release_branch into master..."
+
           git config user.name "admghub-ccplsolutions"
           git config user.email "admgithub.ccplsolutions@outlook.com"
 
           git fetch origin
           git checkout master
-          git pull origin master
-
-          echo "Current branch4"
-          git branch --show-current
 
           git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master"
+          git push
+
+      - name: Merge Release into Develop
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          release_branch=release/$version
+
+          echo "Merging $release_branch into develop..."
+
+          git config user.name "admghub-ccplsolutions"
+          git config user.email "admgithub.ccplsolutions@outlook.com"
+
+          git fetch origin
+          git checkout develop
+
+          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into develop"
           git push
