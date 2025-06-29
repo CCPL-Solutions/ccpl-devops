@@ -9,10 +9,6 @@ on:
         required: true
       SLACK_WEBHOOK_URL:
         required: true
-    inputs:
-      IS_SNAPSHOT:
-        required: true
-        type: boolean
 
 permissions:
   contents: write
@@ -71,46 +67,31 @@ jobs:
               }
             ]
 
-      - name: Validate Version
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Project version: $version"
-          if [[ "${{ inputs.IS_SNAPSHOT }}" == "true" && "$version" != *-SNAPSHOT ]]; then
-            echo "Expected a SNAPSHOT version but found: $version"
-            exit 1
-          fi
-          if [[ "${{ inputs.IS_SNAPSHOT }}" == "false" && "$version" == *-SNAPSHOT ]]; then
-            echo "Expected a RELEASE version but found SNAPSHOT: $version"
-            exit 1
-          fi
-
       - name: Build and Publish
         run: |
-          if [ "${{ inputs.IS_SNAPSHOT }}" = "true" ]; then
-            echo "Publishing SNAPSHOT version..."
-            mvn clean deploy -DskipTests=true
-          else
-            echo "Publishing RELEASE version..."
-            mvn clean deploy -DskipTests=true
-          fi
+            version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+            version=${version}-SNAPSHOT
+            mvn clean deploy -DskipTests=true -Drevision=version
 
       - name: Create Release Branch
-        if: ${{ inputs.IS_SNAPSHOT == true }}
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
           branch=release/$version
-          branch=${branch//-SNAPSHOT/}
           echo "Creating branch $branch ..."
+
           git config user.name "admghub-ccplsolutions"
           git config user.email "admgithub.ccplsolutions@outlook.com"
           git fetch origin
+
           if git ls-remote --exit-code --heads origin "$branch"; then
             echo "Branch $branch already exists. Deleting it..."
             git push origin --delete "$branch"
           fi
-          git checkout origin/develop
+
+          git checkout develop
           git checkout -b "$branch"
-          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          git push
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
@@ -121,7 +102,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
 
-  manual-approval:
+  approve-release:
     name: Approve Release
     runs-on: ubuntu-latest
     needs: build
@@ -135,7 +116,7 @@ jobs:
   finalize-release:
     name: Publish Release
     runs-on: ubuntu-latest
-    needs: manual-approval
+    needs: approve-release
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -144,37 +125,14 @@ jobs:
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           branch=release/$version
-          branch=${branch//-SNAPSHOT/}
+
           echo "Current branch"
           git branch --show-current
+
           echo "Checking out branch $branch ..."
           git fetch origin
           git checkout "$branch"
-
-      - name: Get version from pom.xml
-        id: get_version
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "version=${version}" >> $GITHUB_OUTPUT
-
-      - name: Remove -SNAPSHOT from pom.xml
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          release_version="${version/-SNAPSHOT/}"
-          echo "Setting release version to $release_version"
-          mvn versions:set -DnewVersion=$release_version
-          mvn versions:commit
-
-      - name: Commit and Push Version Update
-        run: |
-          git config user.name "admghub-ccplsolutions"
-          git config user.email "admgithub.ccplsolutions@outlook.com"
-          git commit -am "chore: finalize release version"
-          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-          echo "Current branch 2"
-          git branch --show-current
-
-
+          git pull
 
       - name: Set Up Maven Settings
         uses: s4u/maven-settings-action@v3.1.0
@@ -207,25 +165,18 @@ jobs:
       - name: Merge Release into Master
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          release_branch=release/${version/-SNAPSHOT/}
+          release_branch=release/version
+
           echo "Current branch3"
           git branch --show-current
+
           echo "Merging $release_branch into master..."
           git fetch origin
           git checkout master
           git pull
+
           echo "Current branch4"
           git branch --show-current
-          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master" --allow-unrelated-histories
-          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
-      - name: Merge Release into Develop
-        run: |
-          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          release_branch=release/${version/-SNAPSHOT/}
-          echo "Merging $release_branch into develop..."
-          git fetch origin
-          git checkout develop
-          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into develop" --allow-unrelated-histories
-          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-
+          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master"
+          git push
