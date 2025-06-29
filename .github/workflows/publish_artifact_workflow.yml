@@ -121,7 +121,7 @@ jobs:
         if: always()
 
   manual-approval:
-    name: Manual Approval To Finalize Release
+    name: Approve Release
     runs-on: ubuntu-latest
     needs: build
     environment:
@@ -136,10 +136,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: manual-approval
     steps:
-      - name: Checkout Release Branch
+      - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: release/${{ steps.get_version.outputs.version }}
+
+      - name: Checkout Release Branch
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          branch=release/$version
+          branch=${branch//-SNAPSHOT/}
+          echo "Checking out branch $branch ..."
+          git fetch origin
+          git checkout "$branch"
 
       - name: Get version from pom.xml
         id: get_version
