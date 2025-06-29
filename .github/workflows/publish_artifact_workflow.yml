@@ -176,7 +176,7 @@ jobs:
 
           git fetch origin
           git checkout master
-          git pull
+          git pull origin master
 
           echo "Current branch4"
           git branch --show-current
