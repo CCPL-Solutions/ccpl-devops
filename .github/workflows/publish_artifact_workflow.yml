@@ -108,6 +108,7 @@ jobs:
             echo "Branch $branch already exists. Deleting it..."
             git push origin --delete "$branch"
           fi
+          git checkout origin/develop
           git checkout -b "$branch"
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
