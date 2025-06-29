@@ -95,7 +95,7 @@ jobs:
           fi
 
       - name: Create Release Branch
-        if: ${{ inputs.IS_SNAPSHOT == false }}
+        if: ${{ inputs.IS_SNAPSHOT == true }}
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           branch=release/$version
