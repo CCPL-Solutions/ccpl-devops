@@ -168,3 +168,29 @@ jobs:
           git config user.email "admgithub.ccplsolutions@outlook.com"
           git commit -am "chore: finalize release version"
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Build and Publish
+        run: |
+          echo "Publishing RELEASE version..."
+          mvn clean deploy -DskipTests=true
+
+      - name: Merge Release into Master
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          release_branch=release/${version/-SNAPSHOT/}
+          echo "Merging $release_branch into master..."
+          git fetch origin
+          git checkout master
+          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master"
+          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Merge Release into Develop
+        run: |
+          version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          release_branch=release/${version/-SNAPSHOT/}
+          echo "Merging $release_branch into develop..."
+          git fetch origin
+          git checkout develop
+          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into develop"
+          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+
