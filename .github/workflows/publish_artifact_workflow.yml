@@ -178,5 +178,5 @@ jobs:
           echo "Current branch4"
           git branch --show-current
 
-          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master"
+          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master" --allow-unrelated-histories
           git push
