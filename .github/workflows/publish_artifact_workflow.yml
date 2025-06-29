@@ -109,7 +109,7 @@ jobs:
             git push origin --delete "$branch"
           fi
           git checkout -b "$branch"
-          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }} "$branch"
+          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
