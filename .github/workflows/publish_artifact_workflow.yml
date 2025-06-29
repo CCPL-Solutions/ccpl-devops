@@ -213,6 +213,8 @@ jobs:
           echo "Merging $release_branch into master..."
           git fetch origin
           git checkout master
+          echo "Current branch4"
+          git branch --show-current
           git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master" --allow-unrelated-histories
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
