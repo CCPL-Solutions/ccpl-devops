@@ -101,6 +101,8 @@ jobs:
           branch=release/$version
           branch=${branch//-SNAPSHOT/}
           echo "Creating branch $branch ..."
+          git config user.name "admghub-ccplsolutions"
+          git config user.email "admgithub.ccplsolutions@outlook.com"
           git fetch origin
           if git ls-remote --exit-code --heads origin "$branch"; then
             echo "Branch $branch already exists. Deleting it..."
