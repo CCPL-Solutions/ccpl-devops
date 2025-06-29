@@ -119,3 +119,14 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
+
+  manual-approval:
+    name: Manual Approval To Finalize Release
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: release-approval
+      url: https://github.com/${{ github.repository }}/branches
+    steps:
+      - name: Waiting for manual approval
+        run: echo "Waiting for approval to finalize the release..."
