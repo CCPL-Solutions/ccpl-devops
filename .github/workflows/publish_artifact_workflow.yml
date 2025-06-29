@@ -89,7 +89,7 @@ jobs:
             git push origin --delete "$branch"
           fi
 
-          git checkout origin/develop
+          git checkout develop
           git checkout -b "$branch"
           git push --set-upstream origin "$branch"
 
