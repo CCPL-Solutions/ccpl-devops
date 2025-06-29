@@ -71,7 +71,7 @@ jobs:
         run: |
             version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
             version=${version}-SNAPSHOT
-            mvn clean deploy -DskipTests=true -Drevision=version
+            mvn clean deploy -DskipTests=true -Drevision=$version
 
       - name: Create Release Branch
         run: |
