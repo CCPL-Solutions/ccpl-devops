@@ -99,9 +99,8 @@ jobs:
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           branch=release/$version
+          branch=${branch//SNAPSHOT/}
           echo "Creating branch $branch ..."
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
           git fetch origin
           if git ls-remote --exit-code --heads origin "$branch"; then
             echo "Branch $branch already exists. Deleting it..."
