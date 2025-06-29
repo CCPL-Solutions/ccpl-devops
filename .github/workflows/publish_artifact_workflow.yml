@@ -165,7 +165,7 @@ jobs:
       - name: Merge Release into Master
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          release_branch=release/version
+          release_branch=release/$version
 
           echo "Current branch3"
           git branch --show-current
