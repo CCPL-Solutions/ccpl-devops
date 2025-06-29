@@ -91,7 +91,7 @@ jobs:
 
           git checkout develop
           git checkout -b "$branch"
-          git push
+          git push --set-upstream origin "$branch"
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
