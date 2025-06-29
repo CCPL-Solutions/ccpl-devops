@@ -207,7 +207,7 @@ jobs:
           echo "Merging $release_branch into master..."
           git fetch origin
           git checkout master
-          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into master"
+          git pull origin $release_branch
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
       - name: Merge Release into Develop
@@ -217,6 +217,6 @@ jobs:
           echo "Merging $release_branch into develop..."
           git fetch origin
           git checkout develop
-          git merge --no-ff origin/$release_branch -m "chore: merge $release_branch into develop"
+          git pull origin $release_branch
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
 
