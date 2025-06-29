@@ -99,7 +99,7 @@ jobs:
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           branch=release/$version
-          branch=${branch//SNAPSHOT/}
+          branch=${branch//-SNAPSHOT/}
           echo "Creating branch $branch ..."
           git fetch origin
           if git ls-remote --exit-code --heads origin "$branch"; then
@@ -107,7 +107,7 @@ jobs:
             git push origin --delete "$branch"
           fi
           git checkout -b "$branch"
-          git push origin "$branch"
+          git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }} "$branch"
 
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
