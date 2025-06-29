@@ -145,6 +145,8 @@ jobs:
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           branch=release/$version
           branch=${branch//-SNAPSHOT/}
+          echo "Current branch"
+          git branch --show-current
           echo "Checking out branch $branch ..."
           git fetch origin
           git checkout "$branch"
@@ -169,6 +171,8 @@ jobs:
           git config user.email "admgithub.ccplsolutions@outlook.com"
           git commit -am "chore: finalize release version"
           git push https://x-access-token:${{ secrets.USERNAME_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          echo "Current branch 2"
+          git branch --show-current
 
 
 
@@ -204,6 +208,8 @@ jobs:
         run: |
           version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           release_branch=release/${version/-SNAPSHOT/}
+          echo "Current branch3"
+          git branch --show-current
           echo "Merging $release_branch into master..."
           git fetch origin
           git checkout master
